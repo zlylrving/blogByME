@@ -5,822 +5,543 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>我的博客 — 记录思考与见闻</title>
 <style>
-  /* ============================================
-     1. CSS Reset & Base
-     ============================================ */
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#fff;--bg-alt:#f5f5f7;--text:#1d1d1f;--text-secondary:#86868b;
+    --text-tertiary:#6e6e73;--link:#0071e3;--link-hover:#0077ed;
+    --border:#d2d2d7;--card-bg:#fff;--nav-bg:rgba(255,255,255,0.72);
+    --font-stack:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --nav-h:48px;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;
+    --shadow-md:0 4px 20px rgba(0,0,0,0.06);--shadow-lg:0 8px 40px rgba(0,0,0,0.08);
+    --transition:0.3s cubic-bezier(0.25,0.1,0.25,1);--max-w:980px
+  }
+  html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+  body{font-family:var(--font-stack);color:var(--text);background:var(--bg);line-height:1.6;overflow-x:hidden}
+  a{color:var(--link);text-decoration:none;transition:color var(--transition)}
+  a:hover{color:var(--link-hover)}
+  img{max-width:100%;display:block}
+  ::selection{background:#0071e3;color:#fff}
 
-  :root {
-    --color-bg:          #ffffff;
-    --color-bg-alt:      #f5f5f7;
-    --color-text:        #1d1d1f;
-    --color-text-secondary: #86868b;
-    --color-text-tertiary:  #6e6e73;
-    --color-link:        #0071e3;
-    --color-link-hover:  #0077ed;
-    --color-border:      #d2d2d7;
-    --color-card-bg:     #ffffff;
-    --color-nav-bg:      rgba(255,255,255,0.72);
-    --color-hero-bg:     #f5f5f7;
-    --font-stack:        -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-                         "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --nav-height:        48px;
-    --radius-sm:         8px;
-    --radius-md:         12px;
-    --radius-lg:         18px;
-    --shadow-sm:         0 1px 3px rgba(0,0,0,0.04);
-    --shadow-md:         0 4px 20px rgba(0,0,0,0.06);
-    --shadow-lg:         0 8px 40px rgba(0,0,0,0.08);
-    --transition:        0.3s cubic-bezier(0.25,0.1,0.25,1);
-    --content-max:       980px;
-  }
+  /* Nav */
+  .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:var(--nav-bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);z-index:100;border-bottom:1px solid rgba(0,0,0,0.08)}
+  .nav-inner{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 22px}
+  .nav-logo{font-size:.95rem;font-weight:600;letter-spacing:-.01em;color:var(--text)!important}
+  .nav-links{display:flex;gap:28px;list-style:none}
+  .nav-links a{font-size:.8rem;font-weight:400;color:var(--text-secondary)!important;letter-spacing:.02em;cursor:pointer}
+  .nav-links a:hover,.nav-links a.active{color:var(--text)!important;font-weight:500}
+  .nav-toggle{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+  .nav-toggle span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;transition:var(--transition)}
+  .nav-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;opacity:0;transition:opacity .35s;pointer-events:none}
+  .nav-overlay.open{opacity:1;pointer-events:auto}
 
-  html {
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
-  }
+  /* Views */
+  .view{display:none}
+  .view.active{display:block}
 
-  body {
-    font-family: var(--font-stack);
-    color: var(--color-text);
-    background: var(--color-bg);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+  /* Hero */
+  .hero{padding:130px 22px 70px;background:var(--bg-alt);text-align:center}
+  .hero-inner{max-width:700px;margin:0 auto}
+  .hero-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--link);background:rgba(0,113,227,0.08);padding:4px 12px;border-radius:20px;margin-bottom:20px}
+  .hero h1{font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:14px}
+  .hero p{font-size:clamp(1rem,2vw,1.15rem);color:var(--text-secondary);line-height:1.7;max-width:560px;margin:0 auto}
 
-  a {
-    color: var(--color-link);
-    text-decoration: none;
-    transition: color var(--transition);
-  }
-  a:hover { color: var(--color-link-hover); }
+  /* Section common */
+  .section{padding:60px 22px 40px}
+  .section-inner{max-width:var(--max-w);margin:0 auto}
+  .section-header{margin-bottom:32px}
+  .section-header h2{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
 
-  img {
-    max-width: 100%;
-    display: block;
-  }
+  /* Featured */
+  .featured-card{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);transition:box-shadow var(--transition);cursor:pointer}
+  .featured-card:hover{box-shadow:var(--shadow-lg)}
+  .featured-card-img{background:var(--bg-alt);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);font-size:3rem;user-select:none}
+  .featured-card-body{padding:36px;display:flex;flex-direction:column;justify-content:center}
+  .featured-card-body .meta{margin-bottom:10px;font-size:.75rem;color:var(--text-secondary)}
+  .featured-card-body .meta .cat{font-weight:600;color:var(--link);text-transform:uppercase;letter-spacing:.06em}
+  .featured-card-body h2{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px}
+  .featured-card-body p{font-size:.92rem;color:var(--text-secondary);line-height:1.7;margin-bottom:14px}
+  .read-more{font-size:.82rem;font-weight:500;color:var(--link);cursor:pointer;transition:color var(--transition)}
+  .read-more:hover{color:var(--link-hover)}
 
-  ::selection {
-    background: #0071e3;
-    color: #fff;
-  }
+  /* Post Grid */
+  .posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+  .post-card{background:var(--card-bg);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);transition:transform var(--transition),box-shadow var(--transition);cursor:pointer;display:flex;flex-direction:column}
+  .post-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .post-card-img{width:100%;aspect-ratio:16/10;object-fit:cover;display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);font-size:2rem;user-select:none}
+  .post-card-body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column}
+  .post-card-body .meta{font-size:.75rem;color:var(--text-secondary);margin-bottom:8px;display:flex;gap:10px}
+  .post-card-body .meta .cat{font-weight:600;color:var(--link);text-transform:uppercase;letter-spacing:.06em}
+  .post-card-body h3{font-size:1.1rem;font-weight:650;letter-spacing:-.01em;line-height:1.35;margin-bottom:8px}
+  .post-card-body p{font-size:.86rem;color:var(--text-secondary);line-height:1.6;flex:1}
 
-  /* ============================================
-     2. Navigation
-     ============================================ */
-  .nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: var(--nav-height);
-    background: var(--color-nav-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    z-index: 100;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-  }
+  /* Article full page */
+  .article-page{padding:120px 22px 60px;max-width:700px;margin:0 auto}
+  .article-page .back-link{display:inline-block;font-size:.82rem;color:var(--text-secondary);margin-bottom:24px;cursor:pointer;transition:color var(--transition)}
+  .article-page .back-link:hover{color:var(--text)}
+  .article-page .meta{font-size:.8rem;color:var(--text-secondary);margin-bottom:12px;display:flex;gap:12px}
+  .article-page .meta .cat{color:var(--link);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .article-page h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:16px}
+  .article-cover{width:100%;aspect-ratio:16/9;border-radius:var(--radius-md);margin-bottom:28px;display:flex;align-items:center;justify-content:center;font-size:4rem;user-select:none}
+  .article-content{font-size:1rem;line-height:1.8;color:var(--text)}
+  .article-content p{margin-bottom:1.2em}
+  .article-content h2{font-size:1.3rem;font-weight:650;margin:1.8em 0 .6em;letter-spacing:-.01em}
+  .article-content h3{font-size:1.1rem;font-weight:600;margin:1.5em 0 .5em}
+  .article-content blockquote{border-left:3px solid var(--border);padding:8px 16px;margin:1em 0;color:var(--text-secondary);background:var(--bg-alt);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  .article-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:.9em}
+  .article-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--radius-sm);overflow-x:auto;margin:1em 0;font-size:.88rem;line-height:1.5;border:1px solid var(--border)}
 
-  .nav-inner {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    padding: 0 22px;
-  }
+  /* Articles list */
+  .articles-page{padding:120px 22px 60px}
+  .articles-page-inner{max-width:var(--max-w);margin:0 auto}
+  .articles-page h1{font-size:1.8rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+  .articles-page .subtitle{font-size:.92rem;color:var(--text-secondary);margin-bottom:28px}
+  .filter-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+  .filter-tab{padding:5px 14px;border-radius:20px;font-size:.8rem;border:1px solid var(--border);background:none;cursor:pointer;transition:all var(--transition);color:var(--text-secondary);font-family:inherit}
+  .filter-tab:hover{border-color:var(--link);color:var(--link)}
+  .filter-tab.active{background:var(--link);color:#fff;border-color:var(--link)}
 
-  .nav-logo {
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--color-text) !important;
-  }
+  /* About */
+  .about-page{padding:120px 22px 60px;max-width:640px;margin:0 auto}
+  .about-page h1{font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+  .about-page .subtitle{font-size:.92rem;color:var(--text-secondary);margin-bottom:32px}
+  .about-avatar{width:80px;height:80px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin-bottom:20px}
+  .about-page .bio{font-size:1rem;line-height:1.8;color:var(--text);margin-bottom:20px}
+  .about-page .bio a{color:var(--link)}
+  .about-socials{display:flex;gap:16px;margin-top:24px}
+  .about-socials a{font-size:.88rem;color:var(--text-secondary);padding:6px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);transition:all var(--transition)}
+  .about-socials a:hover{color:var(--text);border-color:var(--text);background:var(--bg-alt)}
 
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-  .nav-links a {
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: var(--color-text-secondary) !important;
-    letter-spacing: 0.02em;
-    transition: color var(--transition);
-  }
-  .nav-links a:hover {
-    color: var(--color-text) !important;
-  }
-  .nav-links a.active {
-    color: var(--color-text) !important;
-    font-weight: 500;
-  }
+  /* Footer */
+  .footer{margin-top:60px;background:var(--bg-alt);border-top:1px solid var(--border);padding:36px 22px 32px}
+  .footer-inner{max-width:var(--max-w);margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px}
+  .footer-brand p{font-size:.78rem;color:var(--text-tertiary);margin-top:4px}
+  .footer-links{display:flex;gap:28px;flex-wrap:wrap}
+  .footer-links div h4{font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px}
+  .footer-links ul{list-style:none}
+  .footer-links li{margin-bottom:3px}
+  .footer-links a{font-size:.78rem;color:var(--text-tertiary)!important;cursor:pointer}
+  .footer-links a:hover{color:var(--text)!important}
+  .footer-bottom{max-width:var(--max-w);margin:24px auto 0;padding-top:12px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-tertiary);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
 
-  /* Hamburger – hidden on desktop */
-  .nav-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .nav-toggle span {
-    display: block;
-    width: 18px;
-    height: 2px;
-    background: var(--color-text);
-    border-radius: 2px;
-    transition: var(--transition);
-  }
-
-  /* ============================================
-     3. Hero
-     ============================================ */
-  .hero {
-    padding: 140px 22px 80px;
-    background: var(--color-hero-bg);
-    text-align: center;
-  }
-
-  .hero-inner {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .hero-tag {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-link);
-    background: rgba(0,113,227,0.08);
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.4rem, 5.5vw, 3.6rem);
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    margin-bottom: 16px;
-    color: var(--color-text);
-  }
-
-  .hero p {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* ============================================
-     4. Blog Posts Grid
-     ============================================ */
-  .posts {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    padding: 70px 22px 50px;
-  }
-
-  .posts-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .posts-header h2 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .posts-header .rss-link {
-    font-size: 0.82rem;
-    color: var(--color-text-secondary);
-  }
-
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-  }
-
-  .post-card {
-    background: var(--color-card-bg);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    transition: transform var(--transition), box-shadow var(--transition);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .post-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .post-card-img {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    background: var(--color-bg-alt);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-tertiary);
-    font-size: 2rem;
-    user-select: none;
-  }
-
-  .post-card-body {
-    padding: 20px 22px 22px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .post-card-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-  }
-
-  .post-card-category {
-    font-weight: 600;
-    color: var(--color-link);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .post-card-date {
-    color: var(--color-text-tertiary);
-  }
-
-  .post-card h3 {
-    font-size: 1.15rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
-    margin-bottom: 8px;
-  }
-
-  .post-card p {
-    font-size: 0.88rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  .post-card-footer {
-    margin-top: 14px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--color-link);
-  }
-
-  /* ============================================
-     5. Featured / Large Card
-     ============================================ */
-  .featured {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    padding: 0 22px;
-  }
-
-  .featured-card {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    transition: box-shadow var(--transition);
-    cursor: pointer;
-  }
-
-  .featured-card:hover {
-    box-shadow: var(--shadow-lg);
-  }
-
-  .featured-card-img {
-    background: var(--color-bg-alt);
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-tertiary);
-    font-size: 3rem;
-    user-select: none;
-  }
-
-  .featured-card-body {
-    padding: 40px 36px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .featured-card-body .post-card-meta {
-    margin-bottom: 10px;
-  }
-
-  .featured-card-body h2 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 12px;
-  }
-
-  .featured-card-body p {
-    font-size: 0.95rem;
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    margin-bottom: 16px;
-  }
-
-  /* ============================================
-     6. Newsletter / CTA
-     ============================================ */
-  .cta {
-    max-width: 620px;
-    margin: 70px auto 0;
-    padding: 0 22px;
-    text-align: center;
-  }
-
-  .cta h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-  }
-
-  .cta p {
-    font-size: 0.92rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 24px;
-  }
-
-  .cta-form {
-    display: flex;
-    gap: 10px;
-    max-width: 440px;
-    margin: 0 auto;
-  }
-
-  .cta-form input {
-    flex: 1;
-    padding: 10px 16px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    font: inherit;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
-  }
-
-  .cta-form input:focus {
-    border-color: var(--color-link);
-    box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
-  }
-
-  .cta-form button {
-    padding: 10px 22px;
-    background: var(--color-link);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font: inherit;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background var(--transition), transform var(--transition);
-    white-space: nowrap;
-  }
-
-  .cta-form button:hover {
-    background: var(--color-link-hover);
-    transform: scale(1.02);
-  }
-
-  /* ============================================
-     7. Footer
-     ============================================ */
-  .footer {
-    margin-top: 80px;
-    background: var(--color-bg-alt);
-    border-top: 1px solid var(--color-border);
-    padding: 40px 22px 36px;
-  }
-
-  .footer-inner {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  .footer-brand p {
-    font-size: 0.78rem;
-    color: var(--color-text-tertiary);
-    margin-top: 4px;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .footer-links h4 {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-  }
-
-  .footer-links ul {
-    list-style: none;
-  }
-  .footer-links li { margin-bottom: 4px; }
-  .footer-links a {
-    font-size: 0.78rem;
-    color: var(--color-text-tertiary) !important;
-  }
-  .footer-links a:hover {
-    color: var(--color-text) !important;
-  }
-
-  .footer-bottom {
-    max-width: var(--content-max);
-    margin: 28px auto 0;
-    padding-top: 14px;
-    border-top: 1px solid var(--color-border);
-    font-size: 0.72rem;
-    color: var(--color-text-tertiary);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  /* ============================================
-     8. Mobile Nav Overlay
-     ============================================ */
-  .nav-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 99;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-  .nav-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* ============================================
-     9. Responsive
-     ============================================ */
-  @media (max-width: 768px) {
-    .nav-toggle {
-      display: flex;
-    }
-
-    .nav-links {
-      position: fixed;
-      top: var(--nav-height); left: 0; right: 0;
-      flex-direction: column;
-      background: #fff;
-      padding: 16px 22px 24px;
-      gap: 16px;
-      border-bottom: 1px solid var(--color-border);
-      transform: translateY(-100%);
-      opacity: 0;
-      transition: transform 0.35s ease, opacity 0.35s ease;
-      pointer-events: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    }
-    .nav-links.open {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .nav-links a {
-      font-size: 0.95rem;
-    }
-
-    .featured-card {
-      grid-template-columns: 1fr;
-    }
-    .featured-card-body {
-      padding: 24px 22px;
-    }
-
-    .posts-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .cta-form {
-      flex-direction: column;
-    }
-
-    .footer-inner {
-      flex-direction: column;
-    }
+  @media(max-width:768px){
+    .nav-toggle{display:flex}
+    .nav-links{position:fixed;top:var(--nav-h);left:0;right:0;flex-direction:column;background:#fff;padding:16px 22px 24px;gap:16px;border-bottom:1px solid var(--border);transform:translateY(-100%);opacity:0;transition:transform .35s,opacity .35s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+    .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto}
+    .nav-links a{font-size:.95rem}
+    .featured-card{grid-template-columns:1fr}
+    .featured-card-body{padding:24px 22px}
+    .posts-grid{grid-template-columns:1fr}
+    .footer-inner{flex-direction:column}
+    .article-page{padding:100px 16px 40px}
   }
 </style>
 </head>
 <body>
 
-<!-- ============================================
-     Navigation
-     ============================================ -->
+<!-- Nav -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">✦ 我的博客</a>
-
-    <button class="nav-toggle" id="navToggle" aria-label="打开菜单">
-      <span></span><span></span><span></span>
-    </button>
-
+    <a href="#" class="nav-logo" data-nav="home">✦ 我的博客</a>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#" class="active">首页</a></li>
-      <li><a href="#">文章</a></li>
-      <li><a href="#">分类</a></li>
-      <li><a href="#">关于</a></li>
+      <li><a data-nav="home" class="active">首页</a></li>
+      <li><a data-nav="articles">文章</a></li>
+      <li><a data-nav="about">关于</a></li>
     </ul>
   </div>
 </nav>
-
 <div class="nav-overlay" id="navOverlay"></div>
 
-<!-- ============================================
-     Hero
-     ============================================ -->
-<header class="hero">
-  <div class="hero-inner">
-    <span class="hero-tag">最新文章</span>
-    <h1>记录思考，分享见闻</h1>
-    <p>一个关于技术、设计与生活的个人博客。用文字定格灵感，用思考连接世界。</p>
-  </div>
-</header>
-
-<!-- ============================================
-     Featured Article
-     ============================================ -->
-<section class="featured" style="margin-top: -24px;">
-  <div class="featured-card">
-    <div class="featured-card-img" style="background: linear-gradient(135deg, #e8ecf1 0%, #d5dbe3 100%);">
-      <span style="opacity:0.25;">📷</span>
+<!-- ========== View: Home ========== -->
+<div class="view active" id="view-home">
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="hero-tag">最新文章</span>
+      <h1>记录思考，分享见闻</h1>
+      <p>一个关于技术、设计与生活的个人博客。用文字定格灵感，用思考连接世界。</p>
     </div>
-    <div class="featured-card-body">
-      <div class="post-card-meta">
-        <span class="post-card-category">精选</span>
-        <span class="post-card-date">2026 年 6 月 8 日</span>
+  </header>
+
+  <section class="section" style="padding-top:32px">
+    <div class="section-inner">
+      <div class="featured-card" data-post="post-1">
+        <div class="featured-card-img" style="background:linear-gradient(135deg,#e8ecf1,#d5dbe3)">
+          <span style="opacity:.25">📷</span>
+        </div>
+        <div class="featured-card-body">
+          <div class="meta"><span class="cat">精选</span><span>2026 年 6 月 8 日</span></div>
+          <h2>从零搭建一个现代化个人博客</h2>
+          <p>分享我如何用简洁的技术栈搭建这个博客，以及背后关于内容创作与设计哲学的思考。</p>
+          <span class="read-more">阅读全文 →</span>
+        </div>
       </div>
-      <h2>从零搭建一个现代化个人博客</h2>
-      <p>分享我如何用简洁的技术栈搭建这个博客，以及背后关于内容创作与设计哲学的思考。</p>
-      <span class="post-card-footer">阅读全文 →</span>
+    </div>
+  </section>
+
+  <section class="section" id="home-posts">
+    <div class="section-inner">
+      <div class="section-header"><h2>近期文章</h2></div>
+      <div class="posts-grid" id="home-grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== View: Articles ========== -->
+<div class="view" id="view-articles">
+  <div class="articles-page">
+    <div class="articles-page-inner">
+      <h1>全部文章</h1>
+      <p class="subtitle" id="article-count"></p>
+      <div class="filter-tabs" id="filter-tabs"></div>
+      <div class="posts-grid" id="articles-grid"></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ============================================
-     Recent Posts
-     ============================================ -->
-<section class="posts">
-  <div class="posts-header">
-    <h2>近期文章</h2>
-    <a href="#" class="rss-link">订阅 RSS</a>
+<!-- ========== View: Article Detail ========== -->
+<div class="view" id="view-article">
+  <div class="article-page" id="article-container"></div>
+</div>
+
+<!-- ========== View: About ========== -->
+<div class="view" id="view-about">
+  <div class="about-page">
+    <div class="about-avatar">👤</div>
+    <h1>关于我</h1>
+    <p class="subtitle">一个热爱技术与创造的普通人</p>
+    <div class="bio">
+      <p>你好，我是这个博客的主人。这里记录了我对技术、设计和生活的思考。</p>
+      <p>我喜欢写代码、读书、摄影，偶尔也会研究一下怎么把东西做得更好看。这个博客是我整理思路的地方，也是我和世界对话的一扇小窗。</p>
+      <p>如果你也对技术或创作感兴趣，欢迎通过下面这些地方找到我。</p>
+    </div>
+    <div class="about-socials">
+      <a href="https://github.com/zlylrving" target="_blank">GitHub</a>
+      <a href="#">RSS 订阅</a>
+      <a href="#">邮件联系</a>
+    </div>
   </div>
+</div>
 
-  <div class="posts-grid">
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #f0ebe3 0%, #e8e0d4 100%);">
-        <span style="opacity:0.2;">🌿</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">设计</span>
-          <span class="post-card-date">6 月 5 日</span>
-        </div>
-        <h3>简约设计的本质：少即是多</h3>
-        <p>好的设计不是没有东西，而是每一件东西都有它存在的理由。聊聊极简主义在设计中的应用。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #e3edf5 0%, #cddbe8 100%);">
-        <span style="opacity:0.2;">⚙️</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">技术</span>
-          <span class="post-card-date">6 月 2 日</span>
-        </div>
-        <h3>写给自己的 TypeScript 笔记</h3>
-        <p>一些日常开发中容易被忽略的 TypeScript 技巧和类型体操，整理成了一份速查笔记。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #f5eae8 0%, #ecdcd8 100%);">
-        <span style="opacity:0.2;">📖</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">阅读</span>
-          <span class="post-card-date">5 月 28 日</span>
-        </div>
-        <h3>近期书单：认知与创造</h3>
-        <p>过去两个月读了六本书，有关于认知科学的、也有关于创造力的，分享一些让我印象深刻的观点。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #e8edf2 0%, #d4dce6 100%);">
-        <span style="opacity:0.2;">💻</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">技术</span>
-          <span class="post-card-date">5 月 22 日</span>
-        </div>
-        <h3>我的代码编辑器配置分享</h3>
-        <p>从主题到快捷键，从插件到工作流，分享一套让编码更舒适高效的编辑器配置方案。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #f2ece4 0%, #e5dbd1 100%);">
-        <span style="opacity:0.2;">✍️</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">写作</span>
-          <span class="post-card-date">5 月 16 日</span>
-        </div>
-        <h3>为什么你应该开始写博客</h3>
-        <p>写博客不是为了成为大 V，而是为了整理自己的思考，让模糊的想法变得清晰可见。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="post-card-img" style="background: linear-gradient(135deg, #e4ebe4 0%, #d0dbd0 100%);">
-        <span style="opacity:0.2;">🎨</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-category">设计</span>
-          <span class="post-card-date">5 月 10 日</span>
-        </div>
-        <h3>色彩系统设计入门</h3>
-        <p>一套好的色彩系统能让产品拥有统一的气质。从色轮到色彩 tokens，一步步搭建色彩体系。</p>
-        <span class="post-card-footer">阅读全文 →</span>
-      </div>
-    </article>
-
-  </div>
-</section>
-
-<!-- ============================================
-     Newsletter / CTA
-     ============================================ -->
-<section class="cta">
-  <h2>订阅更新</h2>
-  <p>每有新文章发布时，你会第一时间收到邮件通知。我不会发送垃圾邮件。</p>
-  <form class="cta-form" onsubmit="event.preventDefault(); alert('感谢订阅！');">
-    <input type="email" placeholder="请输入你的邮箱地址" required>
-    <button type="submit">订阅</button>
-  </form>
-</section>
-
-<!-- ============================================
-     Footer
-     ============================================ -->
+<!-- Footer -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <strong style="font-size:0.95rem;">✦ 我的博客</strong>
+      <strong style="font-size:.95rem">✦ 我的博客</strong>
       <p>记录思考 · 分享见闻 · 保持好奇</p>
     </div>
     <div class="footer-links">
-      <div>
-        <h4>内容</h4>
-        <ul>
-          <li><a href="#">全部文章</a></li>
-          <li><a href="#">分类归档</a></li>
-          <li><a href="#">标签云</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>社交</h4>
-        <ul>
-          <li><a href="#">GitHub</a></li>
-          <li><a href="#">Twitter</a></li>
-          <li><a href="#">RSS</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>关于</h4>
-        <ul>
-          <li><a href="#">关于我</a></li>
-          <li><a href="#">友情链接</a></li>
-          <li><a href="#">联系</a></li>
-        </ul>
-      </div>
+      <div><h4>内容</h4><ul><li><a data-nav="articles">全部文章</a></li></ul></div>
+      <div><h4>社交</h4><ul><li><a href="https://github.com/zlylrving" target="_blank">GitHub</a></li></ul></div>
+      <div><h4>关于</h4><ul><li><a data-nav="about">关于我</a></li></ul></div>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 我的博客. 保留所有权利.</span>
-    <span>使用 ✦ 和 ☕️ 精心打造</span>
+    <span>© 2026 我的博客</span>
+    <span>用 ✦ 和 ☕️ 精心打造</span>
   </div>
 </footer>
 
-<!-- ============================================
-     JavaScript
-     ============================================ -->
 <script>
-  (function() {
-    const toggle  = document.getElementById('navToggle');
-    const links   = document.getElementById('navLinks');
-    const overlay = document.getElementById('navOverlay');
+(function(){
 
-    function openMenu() {
-      links.classList.add('open');
-      overlay.classList.add('open');
-      toggle.setAttribute('aria-label', '关闭菜单');
-    }
+/* ========== DATA ========== */
+const posts = [
+  {
+    id:"post-1", title:"从零搭建一个现代化个人博客",
+    category:"精选", date:"2026-06-08", emoji:"📷",
+    gradient:"linear-gradient(135deg,#e8ecf1,#d5dbe3)",
+    summary:"分享我如何用简洁的技术栈搭建这个博客，以及背后关于内容创作与设计哲学的思考。",
+    content:`<p>经过几天的折腾，这个博客终于上线了。趁热打铁，把搭建过程中的思考和经验记录下来。</p>
+<h2>为什么自己搭博客</h2>
+<p>市面上有太多现成的博客平台了——微信公众号、知乎、掘金……但它们都有一个共同的问题：你无法完全掌控自己的内容。平台可能会改版、可能会关停，你的文章最终不属于你。</p>
+<p>自己搭建一个博客，从域名、服务器到每一行代码都在自己手里。更重要的是，搭建的过程本身就是一次很好的技术实践。</p>
+<h2>技术选型</h2>
+<p>这个博客没有任何后台服务器，用的是 <strong>GitHub Pages</strong> 做静态托管。<p>
+<p>前端用纯 HTML + CSS + JavaScript，没有引入任何框架。不是不能用 React/Vue，但一个个人博客需要的交互其实很简单，裸写反而加载更快、更可控。</p>
+<blockquote>选工具的基本原则：能用简单的就不用复杂的，能用静态的就不用动态的。</blockquote>
+<h2>设计风格</h2>
+<p>整体视觉参考了 Apple 的设计语言——大留白、无衬线字体、毛玻璃导航栏、圆角卡片。干净、安静、让内容说话。</p>
+<p>配色上以白色和浅灰为底，搭配 <code>#0071e3</code> 的蓝色作为链接色，文字选择 <code>#1d1d1f</code> 作为主色。</p>
+<h2>后续计划</h2>
+<p>博客上线只是第一步，后续还计划加入：</p>
+<ul><li>文章搜索</li><li>标签系统</li><li>评论功能（可能接入 GitHub Issues）</li><li>深色模式</li></ul>
+<p>感谢阅读，下次见。</p>`
+  },
+  {
+    id:"post-2", title:"简约设计的本质：少即是多",
+    category:"设计", date:"2026-06-05", emoji:"🌿",
+    gradient:"linear-gradient(135deg,#f0ebe3,#e8e0d4)",
+    summary:"好的设计不是没有东西，而是每一件东西都有它存在的理由。聊聊极简主义在设计中的应用。",
+    content:`<p>"Less is more." 这句话出自建筑大师路德维希·密斯·凡·德·罗，如今已经成为设计领域的金科玉律。</p>
+<h2>简洁 ≠ 简陋</h2>
+<p>很多人误解了极简主义，以为极简就是"什么都没有"。其实恰恰相反——极简是<strong>每一个留下来的元素都有充分的理由</strong>。</p>
+<p>把不需要的东西拿掉很容易，难的是判断哪些才是真正需要的。这需要对产品、对用户需求有深刻的理解。</p>
+<h2>减法背后的加法</h2>
+<p>苹果的产品之所以看起来简单，是因为他们在你看不见的地方做了大量的工作。从硬件内部的精密排布，到软件里每个像素的对齐，无一不是精心设计的结果。</p>
+<blockquote>设计不是关于有多少东西可以用，而是关于如何恰当地运用它们。</blockquote>
+<h2>如何在日常设计中实践</h2>
+<ul><li>减少颜色数量，用层次代替色彩区分</li><li>减少字体种类，用字重和字号建立层级</li><li>减少装饰元素，让内容本身成为主角</li></ul>
+<p>做到这些并不容易，但每一次克制都是一次进步。</p>`
+  },
+  {
+    id:"post-3", title:"写给自己的 TypeScript 笔记",
+    category:"技术", date:"2026-06-02", emoji:"⚙️",
+    gradient:"linear-gradient(135deg,#e3edf5,#cddbe8)",
+    summary:"一些日常开发中容易被忽略的 TypeScript 技巧和类型体操，整理成了一份速查笔记。",
+    content:`<p>TypeScript 用久了，总会遇到一些"我明明写的对，为什么报错"的时刻。这篇笔记记录了一些容易混淆的知识点。</p>
+<h2>类型推断 vs 类型注解</h2>
+<pre><code>// ✅ 这样写就够了，TS 会自动推断
+const name = "hello";
 
-    function closeMenu() {
-      links.classList.remove('open');
-      overlay.classList.remove('open');
-      toggle.setAttribute('aria-label', '打开菜单');
-    }
+// ❌ 没必要，冗余
+const name: string = "hello";</code></pre>
+<h2>联合类型收窄</h2>
+<pre><code>function getLength(x: string | string[]) {
+  if (typeof x === "string") {
+    return x.length;  // TS 知道这里是 string
+  }
+  return x.length;    // TS 知道这里是 string[]
+}</code></pre>
+<p>用类型守卫可以帮 TypeScript 收窄类型范围，避免不必要的类型断言。</p>
+<h2>实用工具类型</h2>
+<p><code>Partial&lt;T&gt;</code>、<code>Pick&lt;T, K&gt;</code>、<code>Omit&lt;T, K&gt;</code> 是最常用的三个工具类型，合理使用可以减少大量重复的类型定义。</p>
+<blockquote>类型安全的意义不是消灭所有错误，而是在编译阶段捕获那些本可以避免的错误。</blockquote>`
+  },
+  {
+    id:"post-4", title:"近期书单：认知与创造",
+    category:"阅读", date:"2026-05-28", emoji:"📖",
+    gradient:"linear-gradient(135deg,#f5eae8,#ecdcd8)",
+    summary:"过去两个月读了六本书，有关于认知科学的、也有关于创造力的，分享一些让我印象深刻的观点。",
+    content:`<p>过去两个月断断续续读了六本书，选了三本特别想推荐的，把核心观点整理了一下。</p>
+<h2>《思考，快与慢》</h2>
+<p>丹尼尔·卡尼曼的经典之作。书里把人的思维分成两个系统：<strong>系统 1</strong>（快速、直觉）和 <strong>系统 2</strong>（缓慢、理性）。大多数时候我们在用系统 1 做决策，而它充满了偏见。</p>
+<p>读完这本书最大的收获不是学会了什么技巧，而是对自己思考方式保持警惕——知道自己的判断可能是有问题的。</p>
+<h2>《创造力》</h2>
+<p>米哈里·契克森米哈伊的著作。他研究了大量创造性人物，发现创造力不是灵光一现，而是<strong>长期沉浸在某个领域 + 不断的尝试和修正</strong>的结果。</p>
+<p>最有启发的点是：创造力往往出现在两个领域的交汇处。</p>
+<h2>《写给大家看的设计书》</h2>
+<p>入门级但非常实用。讲了四个基本原则：对比、重复、对齐、亲密性。看完就能立刻用到自己的文档和PPT里。</p>
+<blockquote>读书不是为了记住所有内容，而是为了让好的观点有机会影响你的思考方式。</blockquote>`
+  },
+  {
+    id:"post-5", title:"我的代码编辑器配置分享",
+    category:"技术", date:"2026-05-22", emoji:"💻",
+    gradient:"linear-gradient(135deg,#e8edf2,#d4dce6)",
+    summary:"从主题到快捷键，从插件到工作流，分享一套让编码更舒适高效的编辑器配置方案。",
+    content:`<p>工欲善其事，必先利其器。一个好的编辑器配置能显著提升编码体验和效率。</p>
+<h2>编辑器选择</h2>
+<p>我主要用 VS Code，它拥有最丰富的插件生态和最好的开箱即用体验。</p>
+<h2>主题</h2>
+<p>长期使用的是一套自配的暗色主题：<code>One Dark Pro</code> + 调整过的语法高亮颜色。暗色主题的好处是可以长时间工作不累眼。</p>
+<h2>必备插件</h2>
+<ul><li><strong>Prettier</strong> - 代码格式化，统一团队风格</li><li><strong>GitLens</strong> - 查看代码行级 Git 历史</li><li><strong>Error Lens</strong> - 行内显示错误信息</li><li><strong>GitHub Copilot</strong> - AI 辅助编码</li></ul>
+<h2>快捷键</h2>
+<p>最常用的几个：<code>Ctrl+P</code> 快速打开文件，<code>Ctrl+Shift+P</code> 命令面板，<code>Ctrl+\`</code> 打开终端。</p>
+<blockquote>好的工具配置不是一次性完成的，而是在日常使用中逐步打磨出来的。</blockquote>`
+  },
+  {
+    id:"post-6", title:"为什么你应该开始写博客",
+    category:"写作", date:"2026-05-16", emoji:"✍️",
+    gradient:"linear-gradient(135deg,#f2ece4,#e5dbd1)",
+    summary:"写博客不是为了成为大 V，而是为了整理自己的思考，让模糊的想法变得清晰可见。",
+    content:`<p>很多人觉得写博客是"别人的事"。他们会说：我又不是大神，写出来也没人看。</p>
+<p>但我想说的是，<strong>写作最大的收益者是你自己</strong>。</p>
+<h2>写作强迫你思考</h2>
+<p>一件事你觉得自己懂了，但当你试图把它写下来的时候，会发现很多地方其实是模糊的。写作的过程就是把这些模糊之处一个一个补上的过程。</p>
+<h2>写给自己看的笔记</h2>
+<p>不需要每一篇文章都是"干货"。你自己才是第一个读者。三个月后你回头看自己写的东西，会感谢当时记录的自己。</p>
+<h2>怎么开始</h2>
+<p>不需要完美的工具和平台。最简单的开始方式就是：打开一个编辑器，写下你今天学到的一个知识点。300 字就够了。</p>
+<blockquote>不要等到"准备好了"再开始写。你永远不会有完全准备好的一天。现在就开始。</blockquote>`
+  },
+  {
+    id:"post-7", title:"色彩系统设计入门",
+    category:"设计", date:"2026-05-10", emoji:"🎨",
+    gradient:"linear-gradient(135deg,#e4ebe4,#d0dbd0)",
+    summary:"一套好的色彩系统能让产品拥有统一的气质。从色轮到色彩 tokens，一步步搭建色彩体系。",
+    content:`<p>色彩是设计中最直观也最容易失控的元素之一。一套好的色彩系统能让产品看起来专业、统一、有质感。</p>
+<h2>从品牌色开始</h2>
+<p>品牌色是你的色彩系统的锚点。通常选择 1-2 个主色，然后在此基础上延伸出完整色板。</p>
+<h2>建立色彩层级</h2>
+<ul><li>主色 (Primary) - 品牌色，用于关键行动点</li><li>中性色 (Neutral) - 用于文字、背景、边框</li><li>语义色 (Semantic) - 成功、警告、错误等状态</li></ul>
+<h2>使用 Design Tokens</h2>
+<p>不要直接写色值，而是定义一套语义化的 tokens：</p>
+<pre><code>--color-primary: #0071e3;
+--color-text-primary: #1d1d1f;
+--color-text-secondary: #86868b;
+--color-bg-primary: #ffffff;
+--color-bg-secondary: #f5f5f7;</code></pre>
+<blockquote>好的色彩系统让你在修改设计时只需改一个变量，而不是满世界找色值。</blockquote>`
+  }
+];
 
-    toggle.addEventListener('click', function() {
-      links.classList.contains('open') ? closeMenu() : openMenu();
+/* ========== STATE ========== */
+let currentView = "home";
+let currentCategory = "全部";
+let currentPost = null;
+
+const views = {
+  home: document.getElementById("view-home"),
+  articles: document.getElementById("view-articles"),
+  article: document.getElementById("view-article"),
+  about: document.getElementById("view-about")
+};
+
+const navLinks = document.querySelectorAll(".nav-links a, .nav-links li a, [data-nav]");
+const mobLinks = document.getElementById("navLinks");
+const overlay = document.getElementById("navOverlay");
+const toggle = document.getElementById("navToggle");
+
+/* ========== UTILITIES ========== */
+function getUniqueCategories() {
+  const cats = ["全部"];
+  posts.forEach(p => { if (!cats.includes(p.category)) cats.push(p.category); });
+  return cats;
+}
+
+function formatDate(d) {
+  const months = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  const parts = d.split("-");
+  return `${parts[0]} 年 ${parseInt(parts[1])} 月 ${parseInt(parts[2])} 日`;
+}
+
+/* ========== RENDER ========== */
+function renderHomePosts() {
+  const grid = document.getElementById("home-grid");
+  grid.innerHTML = posts.slice(1).map(p => renderCard(p)).join("");
+}
+
+function renderCard(post) {
+  return `<article class="post-card" data-post="${post.id}">
+    <div class="post-card-img" style="background:${post.gradient}"><span style="opacity:.2">${post.emoji}</span></div>
+    <div class="post-card-body">
+      <div class="meta"><span class="cat">${post.category}</span><span>${formatDate(post.date)}</span></div>
+      <h3>${post.title}</h3>
+      <p>${post.summary}</p>
+      <span class="read-more">阅读全文 →</span>
+    </div>
+  </article>`;
+}
+
+function renderArticles() {
+  const grid = document.getElementById("articles-grid");
+  const count = document.getElementById("article-count");
+  const filtered = currentCategory === "全部"
+    ? posts
+    : posts.filter(p => p.category === currentCategory);
+  count.textContent = `共 ${filtered.length} 篇文章`;
+  grid.innerHTML = filtered.map(p => renderCard(p)).join("");
+
+  // Render filter tabs
+  const tabs = document.getElementById("filter-tabs");
+  tabs.innerHTML = getUniqueCategories().map(c =>
+    `<button class="filter-tab${c === currentCategory ? " active" : ""}" data-cat="${c}">${c}</button>`
+  ).join("");
+}
+
+function renderArticle(postId) {
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  currentPost = postId;
+  const container = document.getElementById("article-container");
+  container.innerHTML = `
+    <span class="back-link" data-nav="articles">← 返回文章列表</span>
+    <div class="meta"><span class="cat">${post.category}</span><span>${formatDate(post.date)}</span></div>
+    <h1>${post.title}</h1>
+    <div class="article-cover" style="background:${post.gradient}"><span style="opacity:.25">${post.emoji}</span></div>
+    <div class="article-content">${post.content}</div>
+    <span class="back-link" style="margin-top:32px" data-nav="articles">← 返回文章列表</span>
+  `;
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ========== NAVIGATION ========== */
+function switchView(view, data) {
+  Object.keys(views).forEach(k => views[k].classList.remove("active"));
+  if (views[view]) views[view].classList.add("active");
+  currentView = view;
+
+  // Nav link active state
+  document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
+  const activeLink = document.querySelector(`.nav-links a[data-nav="${view}"]`);
+  if (activeLink) activeLink.classList.add("active");
+
+  closeMenu();
+  document.documentElement.scrollTop = 0;
+
+  if (view === "home") renderHomePosts();
+  if (view === "articles") renderArticles();
+  if (view === "article" && data) {
+    renderArticle(data);
+  }
+}
+
+function closeMenu() {
+  mobLinks.classList.remove("open");
+  overlay.classList.remove("open");
+  if (toggle) toggle.setAttribute("aria-label", "菜单");
+}
+
+function openMenu() {
+  mobLinks.classList.add("open");
+  overlay.classList.add("open");
+  if (toggle) toggle.setAttribute("aria-label", "关闭菜单");
+}
+
+/* ========== EVENT DELEGATION ========== */
+document.addEventListener("click", function(e) {
+  // Navigation
+  const navTarget = e.target.closest("[data-nav]");
+  if (navTarget) {
+    e.preventDefault();
+    const view = navTarget.dataset.nav;
+    if (view === "articles") switchView("articles");
+    else if (view === "about") switchView("about");
+    else if (view === "home") switchView("home");
+    return;
+  }
+
+  // Article card click
+  const card = e.target.closest(".post-card, .featured-card");
+  if (card && card.dataset.post) {
+    e.preventDefault();
+    switchView("article", card.dataset.post);
+    return;
+  }
+
+  // Filter tab
+  const tab = e.target.closest(".filter-tab");
+  if (tab && tab.dataset.cat) {
+    currentCategory = tab.dataset.cat;
+    renderArticles();
+    return;
+  }
+});
+
+// Mobile menu
+if (toggle) {
+  toggle.addEventListener("click", function() {
+    mobLinks.classList.contains("open") ? closeMenu() : openMenu();
+  });
+}
+if (overlay) overlay.addEventListener("click", closeMenu);
+
+// Scroll nav border effect
+let ticking = false;
+window.addEventListener("scroll", function() {
+  if (!ticking) {
+    requestAnimationFrame(function() {
+      document.querySelector(".nav").style.borderBottomColor =
+        window.scrollY > 20 ? "rgba(0,0,0,0.10)" : "rgba(0,0,0,0.08)";
+      ticking = false;
     });
+    ticking = true;
+  }
+}, { passive: true });
 
-    overlay.addEventListener('click', closeMenu);
-
-    // 点击菜单链接后自动关闭
-    links.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', closeMenu);
-    });
-
-    // 滚动时动态改变导航栏透明度
-    let lastScroll = 0;
-    window.addEventListener('scroll', function() {
-      const nav = document.querySelector('.nav');
-      const sy  = window.scrollY;
-      if (sy > 20) {
-        nav.style.borderBottomColor = 'rgba(0,0,0,0.10)';
-      } else {
-        nav.style.borderBottomColor = 'rgba(0,0,0,0.08)';
-      }
-      lastScroll = sy;
-    }, { passive: true });
-
-    // 文章卡片点击导向
-    document.querySelectorAll('.post-card, .featured-card').forEach(function(el) {
-      el.addEventListener('click', function() {
-        const title = el.querySelector('h2, h3');
-        if (title) alert('跳转到: ' + title.textContent);
-      });
-    });
-  })();
+/* ========== INIT ========== */
+renderHomePosts();
+})();
 </script>
-
 </body>
 </html>
